@@ -837,7 +837,6 @@ var guaExMap = map[string]*GuaExData{
 		WuXing:  "金",
 		Kind:    "归魂",
 	},
-
 }
 
 // GetLiuShen 六神映射（根据日天干）。索引0=六爻, 5=初爻。

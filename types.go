@@ -55,12 +55,12 @@ type PaipanResult struct {
 	BenGua         GuaInfo    `json:"benGua"`
 	HuGua          GuaInfo    `json:"huGua"`
 	BianGua        *GuaInfo   `json:"bianGua"`
-	BianYao        int        `json:"bianYao"`
+	BianYao        int        `json:"bianYao"` // 首个动爻索引: 0=上爻,5=初爻,-1=无; 多动爻检查BenGua.Yaos中的3/4
 	ShangGua       string     `json:"shangGua"`
 	XiaGua         string     `json:"xiaGua"`
 	ShangGuaWuXing string     `json:"shangGuaWuXing"`
 	XiaGuaWuXing   string     `json:"xiaGuaWuXing"`
 	BenGuaEx       *GuaExData `json:"benGuaEx"`
 	BianGuaEx      *GuaExData `json:"bianGuaEx"`
-	LiuShen        []string   `json:"liuShen"`
+	LiuShen        []string   `json:"liuShen"` // 六神6项，从上爻到初爻
 }

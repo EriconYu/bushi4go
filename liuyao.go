@@ -6,7 +6,8 @@ package bushi
 
 import "time"
 
-// BuildLiuyaoResult 构建六爻排盘结果（包含完整装卦信息）
+// BuildLiuyaoResult 构建六爻排盘结果（包含完整装卦信息）。
+// bianPos 使用 0=上爻、5=初爻、-1=无动爻。
 func BuildLiuyaoResult(ctx DivinationContext, shangGua, xiaGua, bianPos int, method string) *PaipanResult {
 	shang := BaGuaNum2Yaos(shangGua)
 	xia := BaGuaNum2Yaos(xiaGua)
@@ -138,7 +139,8 @@ func LiuYaoSuiJiQiGua(ctx DivinationContext) *PaipanResult {
 	return LiuYaoShuZiQiGua(ctx, [3]int{n0, n1, n2})
 }
 
-// LiuYaoShouYaoQiGua 六爻手动起卦。yaos索引0=六爻(最上), 5=初爻(最下)
+// LiuYaoShouYaoQiGua 六爻手动起卦。yaos索引0=六爻(最上), 5=初爻(最下)。
+// 铜钱记录若按初爻到上爻产生，调用前须反转一次；返回数组不要再次反转。
 func LiuYaoShouYaoQiGua(ctx DivinationContext, yaos [6]int) *PaipanResult {
 	shangYinYang := [3]int{YaoToYinYang(yaos[2]), YaoToYinYang(yaos[1]), YaoToYinYang(yaos[0])}
 	xiaYinYang := [3]int{YaoToYinYang(yaos[5]), YaoToYinYang(yaos[4]), YaoToYinYang(yaos[3])}
