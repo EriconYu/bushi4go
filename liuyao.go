@@ -6,7 +6,8 @@ package bushi
 
 import "math/rand"
 
-// MovingLineIndex 将传统爻位（1=初爻，6=上爻）转换为数组索引（0=上爻，5=初爻）。
+// MovingLineIndex 将传统爻位转换为数组索引（0=上爻，5=初爻）。
+// 爻位按6取余：0及6的倍数为上爻，余数1...5对应初爻至五爻。
 func MovingLineIndex(yaoNumber int) int {
 	normalized := ((yaoNumber-1)%6+6)%6 + 1
 	return 6 - normalized
@@ -120,7 +121,7 @@ func LiuYaoShiJianQiGua(ctx DivinationContext) *PaipanResult {
 	return BuildLiuyaoResult(ctx, shangNum, xiaNum, bianPos, "六爻时间起卦")
 }
 
-// LiuYaoShuZiQiGua 六爻数字起卦。numbers=[上卦数, 下卦数, 动爻位]，1=初爻、6=上爻。
+// LiuYaoShuZiQiGua 六爻数字起卦。numbers=[上卦数, 下卦数, 动爻位]，动爻位须为非负整数并按6取余。
 func LiuYaoShuZiQiGua(ctx DivinationContext, numbers [3]int) *PaipanResult {
 	shangNum := numbers[0] % 8
 	xiaNum := numbers[1] % 8

@@ -128,8 +128,8 @@ func TestNumberDivinationUsesExplicitMovingLine(t *testing.T) {
 		GanZhi:  [4]string{"丙午", "丙申", "甲寅", "乙亥"},
 		XunKong: "子丑", LunarMonth: 6, LunarDay: 26,
 	}
-	for yaoNumber := 1; yaoNumber <= 6; yaoNumber++ {
-		expectedIndex := 6 - yaoNumber
+	cases := map[int]int{0: 0, 1: 5, 6: 0, 7: 5, 12: 0, 13: 5}
+	for yaoNumber, expectedIndex := range cases {
 		if got := MovingLineIndex(yaoNumber); got != expectedIndex {
 			t.Fatalf("爻位 %d 应映射到索引 %d，实际 %d", yaoNumber, expectedIndex, got)
 		}

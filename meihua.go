@@ -31,7 +31,7 @@ func MeiHuaShiJianQiGua(ctx DivinationContext) *PaipanResult {
 	return BuildLiuyaoResult(ctx, shangNum, xiaNum, bianPos, "梅花时间起卦")
 }
 
-// MeiHuaShuZiQiGua 梅花易数数字起卦
+// MeiHuaShuZiQiGua 梅花易数数字起卦。第三个数字须为非负整数并按6取余决定动爻。
 func MeiHuaShuZiQiGua(ctx DivinationContext, numbers [3]int) *PaipanResult {
 	shangNum := numbers[0] % 8
 	xiaNum := numbers[1] % 8
