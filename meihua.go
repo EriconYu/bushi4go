@@ -4,8 +4,6 @@
 
 package bushi
 
-import "time"
-
 // MeiHuaShiJianQiGua 梅花易数时间起卦
 func MeiHuaShiJianQiGua(ctx DivinationContext) *PaipanResult {
 	yearZhiRunes := []rune(ctx.GanZhi[0])
@@ -28,10 +26,7 @@ func MeiHuaShiJianQiGua(ctx DivinationContext) *PaipanResult {
 		xiaNum = 8
 	}
 
-	bianPos := 6 - (sumYMDH % 6)
-	if bianPos == 6 {
-		bianPos = 0
-	}
+	bianPos := MovingLineIndex(sumYMDH)
 
 	return BuildLiuyaoResult(ctx, shangNum, xiaNum, bianPos, "梅花时间起卦")
 }
@@ -46,20 +41,13 @@ func MeiHuaShuZiQiGua(ctx DivinationContext, numbers [3]int) *PaipanResult {
 	if xiaNum == 0 {
 		xiaNum = 8
 	}
-	bianPos := 6 - ((numbers[0] + numbers[1] + numbers[2]) % 6)
-	if bianPos == 6 {
-		bianPos = 0
-	}
+	bianPos := MovingLineIndex(numbers[2])
 	return BuildLiuyaoResult(ctx, shangNum, xiaNum, bianPos, "梅花数字起卦")
 }
 
 // MeiHuaSuiJiQiGua 梅花易数随机起卦
 func MeiHuaSuiJiQiGua(ctx DivinationContext) *PaipanResult {
-	now := time.Now().UnixMilli()
-	n0 := int((now/1000)%9) + 1
-	n1 := int((now/10000)%9) + 1
-	n2 := int((now/100000)%9) + 1
-	return MeiHuaShuZiQiGua(ctx, [3]int{n0, n1, n2})
+	return MeiHuaShuZiQiGua(ctx, randomDivinationNumbers())
 }
 
 // MeiHuaShouYaoQiGua 梅花易数手摇起卦
@@ -83,10 +71,6 @@ func MeiHuaShouYaoQiGua(ctx DivinationContext, yaos [6]int) *PaipanResult {
 			break
 		}
 	}
-	if bianPos == -1 {
-		bianPos = 0
-	}
-
 	bianYaos := GetBianGuaYaos(yaos, bianPos)
 	bianGua := &GuaInfo{Name: Get64GuaNameByYaos(bianYaos), Yaos: bianYaos}
 

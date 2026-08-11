@@ -123,6 +123,67 @@ func TestManualYaoDirectionAndMultipleChanges(t *testing.T) {
 	}
 }
 
+func TestNumberDivinationUsesExplicitMovingLine(t *testing.T) {
+	ctx := DivinationContext{
+		GanZhi:  [4]string{"丙午", "丙申", "甲寅", "乙亥"},
+		XunKong: "子丑", LunarMonth: 6, LunarDay: 26,
+	}
+	for yaoNumber := 1; yaoNumber <= 6; yaoNumber++ {
+		expectedIndex := 6 - yaoNumber
+		if got := MovingLineIndex(yaoNumber); got != expectedIndex {
+			t.Fatalf("爻位 %d 应映射到索引 %d，实际 %d", yaoNumber, expectedIndex, got)
+		}
+		liuYao := LiuYaoShuZiQiGua(ctx, [3]int{1, 1, yaoNumber})
+		if liuYao.BianYao != expectedIndex {
+			t.Fatalf("六爻数字起卦爻位 %d 错误: %d", yaoNumber, liuYao.BianYao)
+		}
+		movingCount := 0
+		for index, yao := range liuYao.BenGua.Yaos {
+			if yao == YaoLaoYang || yao == YaoLaoYin {
+				movingCount++
+				if index != expectedIndex {
+					t.Fatalf("动爻落在索引 %d，预期 %d", index, expectedIndex)
+				}
+			}
+		}
+		if movingCount != 1 {
+			t.Fatalf("应只有一个动爻，实际 %d", movingCount)
+		}
+		if got := MeiHuaShuZiQiGua(ctx, [3]int{1, 1, yaoNumber}).BianYao; got != expectedIndex {
+			t.Fatalf("梅花数字起卦爻位 %d 错误: %d", yaoNumber, got)
+		}
+	}
+	if got := LiuYaoShuZiQiGua(ctx, [3]int{1, 1, 1}).BianGua.Name; got != "天风姤" {
+		t.Fatalf("乾为天初爻动应变天风姤，实际 %s", got)
+	}
+}
+
+func TestRandomAndManualMovingLineInvariants(t *testing.T) {
+	ctx := DivinationContext{
+		GanZhi:  [4]string{"丙午", "丙申", "甲寅", "乙亥"},
+		XunKong: "子丑", LunarMonth: 6, LunarDay: 26,
+	}
+	for i := 0; i < 20; i++ {
+		result := LiuYaoSuiJiQiGua(ctx)
+		if result.BianYao < 0 || result.BianYao > 5 {
+			t.Fatalf("随机动爻索引越界: %d", result.BianYao)
+		}
+		movingCount := 0
+		for _, yao := range result.BenGua.Yaos {
+			if yao == YaoLaoYang || yao == YaoLaoYin {
+				movingCount++
+			}
+		}
+		if movingCount != 1 {
+			t.Fatalf("随机起卦应只有一个动爻，实际 %d", movingCount)
+		}
+	}
+	static := MeiHuaShouYaoQiGua(ctx, [6]int{1, 1, 1, 1, 1, 1})
+	if static.BianYao != -1 {
+		t.Fatalf("无老阴老阳时不应伪造动爻: %d", static.BianYao)
+	}
+}
+
 func TestGuaListAndTexts(t *testing.T) {
 	list := Get64GuaList()
 	if len(list) != 64 || list[0].Name != "乾为天" || list[63].Name != "坤为地" {
