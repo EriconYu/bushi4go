@@ -154,30 +154,39 @@ func LiuYaoShouYaoQiGua(ctx DivinationContext, yaos [6]int) *PaipanResult {
 	huYaos := GetHuGuaYaos(yaos)
 	huGua := GuaInfo{Name: Get64GuaNameByYaos(huYaos), Yaos: huYaos}
 
-	bianYaos := GetBianGuaYaos(yaos, -1)
-	bianGua := &GuaInfo{Name: Get64GuaNameByYaos(bianYaos), Yaos: bianYaos}
+	bianPos := -1
+	for i, yao := range yaos {
+		if yao == YaoLaoYang || yao == YaoLaoYin {
+			bianPos = i
+			break
+		}
+	}
 
 	benGuaEx := GetGuaEx(benGuaName)
-	bianGuaExRaw := GetGuaEx(bianGua.Name)
-
+	var bianGua *GuaInfo
 	var finalBianGuaEx *GuaExData
-	if benGuaEx != nil && bianGuaExRaw != nil {
-		bianLiuQin := ReloadLiuqin(benGuaEx.WuXing, bianGuaExRaw.GanZhi)
-		lqStr := ""
-		for _, lq := range bianLiuQin {
-			lqStr += lq
-		}
-		finalBianGuaEx = &GuaExData{
-			Name:    bianGuaExRaw.Name,
-			LiuQin:  lqStr,
-			GanZhi:  bianGuaExRaw.GanZhi,
-			Shi:     bianGuaExRaw.Shi,
-			Ying:    bianGuaExRaw.Ying,
-			FuCang:  bianGuaExRaw.FuCang,
-			GuaShen: bianGuaExRaw.GuaShen,
-			BaGong:  bianGuaExRaw.BaGong,
-			WuXing:  bianGuaExRaw.WuXing,
-			Kind:    bianGuaExRaw.Kind,
+	if bianPos >= 0 {
+		bianYaos := GetBianGuaYaos(yaos, -1)
+		bianGua = &GuaInfo{Name: Get64GuaNameByYaos(bianYaos), Yaos: bianYaos}
+		bianGuaExRaw := GetGuaEx(bianGua.Name)
+		if benGuaEx != nil && bianGuaExRaw != nil {
+			bianLiuQin := ReloadLiuqin(benGuaEx.WuXing, bianGuaExRaw.GanZhi)
+			lqStr := ""
+			for _, lq := range bianLiuQin {
+				lqStr += lq
+			}
+			finalBianGuaEx = &GuaExData{
+				Name:    bianGuaExRaw.Name,
+				LiuQin:  lqStr,
+				GanZhi:  bianGuaExRaw.GanZhi,
+				Shi:     bianGuaExRaw.Shi,
+				Ying:    bianGuaExRaw.Ying,
+				FuCang:  bianGuaExRaw.FuCang,
+				GuaShen: bianGuaExRaw.GuaShen,
+				BaGong:  bianGuaExRaw.BaGong,
+				WuXing:  bianGuaExRaw.WuXing,
+				Kind:    bianGuaExRaw.Kind,
+			}
 		}
 	}
 
@@ -185,14 +194,6 @@ func LiuYaoShouYaoQiGua(ctx DivinationContext, yaos [6]int) *PaipanResult {
 	dayGanRunes := []rune(ctx.GanZhi[2])
 	if len(dayGanRunes) >= 1 {
 		liuShen = GetLiuShen(string(dayGanRunes[0]))
-	}
-
-	bianPos := -1
-	for i, yao := range yaos {
-		if yao == YaoLaoYang || yao == YaoLaoYin {
-			bianPos = i
-			break
-		}
 	}
 
 	return &PaipanResult{

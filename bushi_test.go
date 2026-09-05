@@ -178,6 +178,10 @@ func TestRandomAndManualMovingLineInvariants(t *testing.T) {
 			t.Fatalf("随机起卦应只有一个动爻，实际 %d", movingCount)
 		}
 	}
+	staticLiuYao := LiuYaoShouYaoQiGua(ctx, [6]int{1, 1, 1, 1, 1, 1})
+	if staticLiuYao.BianYao != -1 || staticLiuYao.BianGua != nil || staticLiuYao.BianGuaEx != nil {
+		t.Fatalf("六静卦不应生成变卦: %+v", staticLiuYao)
+	}
 	static := MeiHuaShouYaoQiGua(ctx, [6]int{1, 1, 1, 1, 1, 1})
 	if static.BianYao != -1 {
 		t.Fatalf("无老阴老阳时不应伪造动爻: %d", static.BianYao)
